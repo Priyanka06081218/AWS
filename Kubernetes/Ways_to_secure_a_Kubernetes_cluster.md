@@ -6,7 +6,7 @@ a. Network Policies:
 
 To ensure that only the appropriate services communicate with one another and that needless exposure is removed, use Kubernetes Network Policies to manage which pods are permitted to communicate. It also helps to isolate distinct types of traffic, such as management, application, and storage, using VLANs or other segmentation methods. This isolation makes it tougher for an attacker to travel laterally through your system.
 
-```apiVersion: networking.k8s.io/v1
+```yaml
 kind: NetworkPolicy
 metadata:
   name: allow-specific-ingress
@@ -16,14 +16,14 @@ spec:
     matchLabels:
       role: frontend
   policyTypes:
-  - Ingress
-  - Egress
+    - Ingress
+    - Egress
   ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          role: backend```
-
+    - from:
+        - podSelector:
+            matchLabels:
+              role: backend
+```
 
 b. Segregate the traffic network:
 
@@ -35,7 +35,8 @@ a. Role-Based Access Control (RBAC):
 
 This is your principal protection against illegal access in a Kubernetes cluster. It operates by granting users and service accounts only the rights they actually require to carry out their duties. This notion of least privilege helps minimize unintentional or malicious misuse of cluster resources by carefully limiting what activities various roles can perform.
 
-```apiVersion: rbac.authorization.k8s.io/v1
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   namespace: development
@@ -67,7 +68,9 @@ subjects:
 roleRef:
   kind: Role
   name: developer-role
-  apiGroup: rbac.authorization.k8s.io```
+  apiGroup: rbac.authorization.k8s.io
+
+```
 
 
 RBAC best practices:
@@ -91,7 +94,8 @@ a. Security Contexts
 
 Set security context at the pod or container level to control security-related configurations like running as a non-root user and dropping unnecessary capabilities.
 
-```apiVersion: v1
+```yaml
+apiVersion: v1
 kind: Pod
 metadata:
   name: secure-pod
@@ -103,7 +107,8 @@ spec:
       runAsUser: 1000
       capabilities:
         drop:
-        - ALL```
+        - ALL
+```
 
 
 4. Data Encryption
@@ -112,7 +117,8 @@ a. Encrypt Data at Rest:
 
 Encrypt data stored in etcd by enabling encryption in the Kubernetes API server configuration.
 
-```apiVersion: apiserver.config.k8s.io/v1
+```yaml
+apiVersion: apiserver.config.k8s.io/v1
 kind: EncryptionConfiguration
 resources:
   - resources:
@@ -122,7 +128,8 @@ resources:
         keys:
         - name: key1
           secret: <base64-encoded-encryption-key>
-    - identity: {}```
+    - identity: {}
+```
 
 b. Encrypt Data in Transit
 
@@ -144,13 +151,15 @@ a. Enable Audit Logging:
 
 Audit logs provide a record of actions taken within the cluster, which is essential for identifying and investigating security incidents.
 
-```apiVersion: audit.k8s.io/v1
+```yaml
+apiVersion: audit.k8s.io/v1
 kind: Policy
 rules:
   - level: Metadata
     resources:
     - group: ""
-      resources: ["pods"]```
+      resources: ["pods"]
+```
 
 7. Regular Updates and Patching
 
@@ -191,13 +200,15 @@ Baseline: Offers a reasonable set of restrictions without too much friction for 
 Restricted: Enforces the strictest security policies suitable for sensitive workloads.
 Example configuration for enforcing the “restricted” policy:
 
-```apiVersion: v1
+```yaml
+apiVersion: v1
 kind: Namespace
 metadata:
   name: secure-namespace
   annotations:
     pod-security.kubernetes.io/enforce: restricted
-    pod-security.kubernetes.io/enforce-version: latest```
+    pod-security.kubernetes.io/enforce-version: latest
+```
 
 Conclusion:
 
