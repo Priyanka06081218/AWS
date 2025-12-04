@@ -22,7 +22,7 @@ spec:
   - from:
     - podSelector:
         matchLabels:
-          role: backend
+          role: backend```
 
 
 b. Segregate the traffic network:
@@ -67,7 +67,7 @@ subjects:
 roleRef:
   kind: Role
   name: developer-role
-  apiGroup: rbac.authorization.k8s.io
+  apiGroup: rbac.authorization.k8s.io```
 
 
 RBAC best practices:
@@ -103,7 +103,7 @@ spec:
       runAsUser: 1000
       capabilities:
         drop:
-        - ALL
+        - ALL```
 
 
 4. Data Encryption
@@ -122,7 +122,7 @@ resources:
         keys:
         - name: key1
           secret: <base64-encoded-encryption-key>
-    - identity: {}
+    - identity: {}```
 
 b. Encrypt Data in Transit
 
@@ -150,7 +150,7 @@ rules:
   - level: Metadata
     resources:
     - group: ""
-      resources: ["pods"]
+      resources: ["pods"]```
 
 7. Regular Updates and Patching
 
@@ -197,7 +197,7 @@ metadata:
   name: secure-namespace
   annotations:
     pod-security.kubernetes.io/enforce: restricted
-    pod-security.kubernetes.io/enforce-version: latest
+    pod-security.kubernetes.io/enforce-version: latest```
 
 Conclusion:
 
